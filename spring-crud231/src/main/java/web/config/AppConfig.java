@@ -21,9 +21,6 @@ import java.util.Properties;
 @ComponentScan(value = "web")
 public class AppConfig {
 
-    @Autowired
-    private Environment env;
-
     @Bean
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -48,7 +45,6 @@ public class AppConfig {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         localContainerEntityManagerFactoryBean.setJpaVendorAdapter(getJpaVendorAdapter());
         localContainerEntityManagerFactoryBean.setDataSource(getDataSource());
-        localContainerEntityManagerFactoryBean.setPersistenceUnitName("myJpaPersistenceUnit");
         localContainerEntityManagerFactoryBean.setPackagesToScan("web");
         localContainerEntityManagerFactoryBean.setJpaProperties(getProperties());
         return localContainerEntityManagerFactoryBean;
@@ -56,14 +52,14 @@ public class AppConfig {
 
     @Bean
     public JpaVendorAdapter getJpaVendorAdapter() {
-        JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        return adapter;
+        JpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+        return jpaVendorAdapter;
     }
 
     @Bean
-    public PlatformTransactionManager txManager() {
-        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager(
-                getEntityManagerFactoryBean().getObject());
+    public PlatformTransactionManager platformTransactionManager() {
+        JpaTransactionManager jpaTransactionManager =
+                new JpaTransactionManager(getEntityManagerFactoryBean().getObject());
         return jpaTransactionManager;
     }
 }
